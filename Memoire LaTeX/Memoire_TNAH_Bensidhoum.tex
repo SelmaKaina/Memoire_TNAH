@@ -1,0 +1,397 @@
+%Document vide aux normes de l'École nationale des Chartes
+%Dernières modifications E. Rouquette (12/2023)
+
+%%%%%%%%%%%%%%%%%%%%%% PRÉAMBULE
+
+
+%%%%%%%%%%%%%% partie obligatoire du préambule
+\documentclass[a4paper,12pt,twoside]{book}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage[french]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES UTILISÉS
+
+\usepackage{csquotes} % les guillemets français
+\usepackage{lettrine} %faire une lettrine (pas obligatoire)
+
+\usepackage[style=enc,sorting=nyt,maxbibnames=10]{biblatex}%charger le style de l'EnC (téléchargeable ici https://ctan.org/pkg/biblatex-enc)
+\addbibresource{bibliographie.bib} %le fichier bibliograhique. 
+
+\usepackage{graphicx}
+\usepackage{adjustbox}
+
+
+%RAJOUTEZ ICI VOS PACKAGES
+
+\usepackage{ragged2e} % Pour le texte justifié à gauche
+\usepackage{listings}  % Pour l'inclusion de code
+\usepackage[table,xcdraw]{xcolor} % Pour la coloration des tableaux et du texte
+\usepackage{tabularx} % Pour des tableaux ajustés à la largeur de la page
+\usepackage{array} % Pour la gestion des tableaux. Le type de colonne m{}, permet de centrer verticalement le texte dans les cellules.
+\usepackage{pdfpages} % Pour inclure des fichiers PDF (annexe 2)
+\usepackage{tocbibind} % Pour inclure les annexes dans la table des matières
+\usepackage{caption} % Pour les légendes de tableaux et figures
+\captionsetup{skip=10pt} % Ajuster l'espacement des légendes
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONFIGURATION DE MISE EN PAGE
+
+%%%%%% Les compteurs (sections, subsections, etc)
+\renewcommand{\thesection}{\Roman{section}.}%On ne fait apparaître que le numéro de la section
+\renewcommand{\thesubsection}{\arabic{subsection}.}%subsection en chiffres arabes
+\renewcommand{\thesubsubsection}{\alph{subsubsection}.}%subsubsection en lettres minuscules
+%Si l'on veut faire apparaître les subsubsection dans le table des matières (à commenter sinon)
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}  % La subsubsection (profondeur=3 dans la table des matières) apparait numérotée dans la TdM
+
+%%%%%  Configurer le document selon les normes de l'école
+
+\usepackage[margin=2.5cm]{geometry} %marges
+\usepackage{setspace} % espacement qui permet ensuite de définir un interligne
+\onehalfspacing % interligne de 1.5
+\setlength\parindent{1cm} % indentation des paragraphes à 1 cm
+
+%%%%% Mise en forme des headers (haut de page)
+
+\usepackage{fancyhdr} %package utilisé pour modifier les headers
+\pagestyle{fancy} %utiliser ses propres choix de mise en page et non ceux par défaut du package
+
+\setlength\headheight{16pt}%la hauteur des headers
+%\renewcommand{\sectionmark}[1]{\markright{\small\textit{\thesection~\  #1}}}%Faire apparaître dans les headers les sections en  petit et en italiques
+\renewcommand{\sectionmark}[1]{}%Commenter la lign précédetne et mettre celle-ci pour ne pas avoir le titre des sections dans le header
+\renewcommand{\chaptermark}[1]{\markboth{\small\chaptername~\thechapter~--\ \textit{#1}}{}}%idem pour les chapitres
+%\renewcommand{\chaptermark}[1]{}%Commenter la ligne précédente et mettre celle-ci pour ne pas avoir le titre des chapitres  dans le header
+
+
+%%%%%%% Package hyperref
+% A mettre après les autres appels de packages car redéfinit certaines commandes).
+
+\usepackage[colorlinks=false, breaklinks=true, pdfusetitle, pdfsubject ={Mémoire TNAH sur l'archivage des photographies nativement numériques aux Archives nationales.}, pdfkeywords={Archivage électronique, Photographie numérique, Paquets d'archives, SIP, Automatisation, Indexation, Signalement}]{hyperref} %
+\usepackage[numbered]{bookmark}%va avec hyperref; marche mieux pour les signets. l'option numbered: les signets dans le pdf sont numérotés
+
+%%%%%%%%%%%%%%%%%%%% Package glossaries
+\usepackage[toc=true]{glossaries}
+\makeglossaries
+
+\newglossaryentry{InterMARC}{%
+	name={Standard InterMARC},%
+	description={Le standard MARC (acronyme de MAchine-Readable Cataloging), souvent appelé "format MARC", est un standard d'échanges de données bibliographiques qui permet d'assurer l'interopérabilité de ces données entre les différents catalogues numériques adoptant le MARC. L'InterMARC en est une variante française, utilisée principalement par la BnF. Il s'agit de normes de description bibliographiques permettant de déterminer la manière dont les informations décrivant un document sont choisies, organisées et affichées dans un catalogue}}
+
+\newglossaryentry{uml}{%
+	name={Unified Modeling Language},%
+	description={L'UML est un langage de modélisation graphique, indépendant de tout langage de programmation, qui fournit une méthode normalisée de représentation et de conception dans les domaines du développement logiciel et de la conception orientée objet}}
+
+\newglossaryentry{xml}{%
+	name={XML},%
+	description={Extensible Markup Language. Langage de balisage conçu pour créer des documents structurés et hiérarchisés à l’aide de balises définies par l'utilisateur, contrairement aux langages de balisage avec des balises prédéfinies. XML est principalement utilisé pour la gestion et l’échange d’informations, permettant de partager et de stocker des données de manière lisible pour les humains et les machines. Son objectif principal est de faciliter l'interopérabilité entre différents systèmes, notamment via Internet}}
+
+\newglossaryentry{openrefine}{%
+	name={OpenRefine},%
+	description={\href{https://openrefine.org/}{OpenRefine} est un logiciel open source utilisé pour la manipulation et le nettoyage de données. Il permet de structurer, transformer, enrichirn filtrer et corriger des données en masse}}
+
+\newglossaryentry{pronom}{%
+	name={PRONOM},%
+	description={PRONOM est une base de données développée par les Archives nationales du Royaume-Uni (The National Archives) pour la gestion et la conservation des formats de fichiers numériques. Elle fournit des informations sur les caractéristiques techniques de nombreux formats. PRONOM aide les archivistes à identifier et gérer les formats de fichiers rencontrés afin de mieux les pérenniser}}
+
+\newglossaryentry{csv}{%
+	name={CSV},%
+	description={Le CSV (Comma-Separated Values) est un format de fichier utilisé pour stocker des données tabulaires sous forme de texte brut. Chaque ligne du fichier représente une ligne de la table, et les valeurs de chaque colonne sont séparées par des virgules (ou par d'autres séparateurs, comme les points-virgules)}}
+
+\newglossaryentry{docstrings}{%
+	name={DocStrings},%
+	description={En Python, les docstrings (ou chaînes de documentation) sont des chaînes de caractères intégrées directement dans le code source pour documenter les modules, classes, fonctions ou méthodes. Elles sont définies entre triples guillemets (""" ou ''') et fournissent des informations sur le but, le fonctionnement, les paramètres et les valeurs de retour de ces éléments}}
+
+\newglossaryentry{poc}{%
+	name={Proof of Concept},%
+	description={Une preuve de concept ou POC (proof of concept, en anglais) est une réalisation courte à échelle réduite d'une certaine méthode ou idée pour démontrer sa faisabilité. Il s'agit d'une réalisation initiale, souvent simplifiée, qui permet de vérifier que les concepts théoriques peuvent être appliqués avec succès dans la pratique. Le PoC est utilisé pour évaluer le potentiel et la viabilité d'un projet}}
+
+\newglossaryentry{lto}{%
+	name={LTO},%
+	description={La bande LTO est un format de stockage sur bande magnétique destiné à l'archivage et à la sauvegarde de grandes quantités de données. Elle a été développée à la fin des années 1990, conjointement par HP, IBM et la division magnetic tape de Seagate. Cette technologie est conçue pour offrir une solution durable de stockage haute capacité}}
+
+\newglossaryentry{python}{%
+	name={Python},%
+	description={Le langage Python est un langage de programmation open source multi-plateformes et orienté objet. Grâce à des bibliothèques spécialisées, Python s'utilise à la fois pour le développement web, l'analyse de données, l'intelligence artificielle et la gestion d'infrastructures. Actuellement le plus utilisé au monde, ce langage est dit de \enquote{haut niveau} car il permet d'écrire des programmes en utilisant des mots usuels des langues naturelles et des symboles mathématiques familiers}}
+
+
+%%%%%%%%%%%%%%%%%% DÉFINITION DES COMMANDES ET ENVIRONNMENTS
+
+% Police pour les environnements de code
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % gras
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % normal
+
+%Définition de couleurs d'environnements de code
+\definecolor{pink}{HTML}{fc4f86}
+\definecolor{blue}{HTML}{040ac2}
+\definecolor{red}{HTML}{dd0822}
+\definecolor{green}{rgb}{0,0.6,0.1}
+\definecolor{orange}{HTML}{ff5733}
+\definecolor{background}{HTML}{1E1E1E}   
+\definecolor{codetext}{HTML}{D4D4D4}     
+\definecolor{orange-string}{HTML}{CE9178}
+\definecolor{green-comment}{HTML}{6A9955}
+\definecolor{yellow}{HTML}{DCDCAA}   
+\definecolor{lightblue}{HTML}{4FC1FF}  
+
+% Définition des couleurs de tableaux
+\definecolor{pastelblue}{rgb}{0.6,0.8,1.0}
+\definecolor{pastelblue-dark}{rgb}{0.4,0.6,0.9}
+\definecolor{pastelpink}{rgb}{1.0,0.8,0.8}
+\definecolor{pastelpink-dark}{rgb}{0.8,0.6,0.6}
+\definecolor{pastelyellow}{rgb}{1.0,1.0,0.8}
+\definecolor{pastelyellow-dark}{rgb}{0.8,0.8,0.6}
+
+% Définition des titres de la bibliographie
+\defbibheading{generalites}{\subsection*{Généralités}}
+\defbibheading{archivage-e-a-aux-archives-nationales}{\subsection*{L'archivage numérique aux Archives nationales}}
+\defbibheading{normes-description}{\subsection*{Les normes de description archivistique et d’échange}}
+\defbibheading{cadre-juridique}{\subsection*{Le cadre juridique}}
+\defbibheading{systemes-archivage}{\subsection*{Les systèmes d’archivage électroniques}}
+\defbibheading{outils-archivage}{\subsection*{ Les outils de l’archivage numérique}}
+\defbibheading{documentation-vitam}{\subsubsection*{Documentation Vitam}}
+\defbibheading{archives-ia}{\subsection*{Archives et intelligence artificielle}}
+\defbibheading{instruments-recherche}{\subsection*{Instruments de recherche}}
+\defbibheading{notices-producteur}{\subsection*{Notices producteur}}
+\defbibheading{sources-bibliographiques}{\subsection*{Sources bibliographiques}}
+\defbibheading{gestion-archives}{\section*{La gestion des archives photographiques}}
+\defbibheading{traitements-caracteristiques}{\subsection*{Traitements et caractéristiques des images numériques}}
+\defbibheading{histoire-sociologie}{\section*{Histoire et sociologie de la pratique photographique}}
+
+% Définition du style pour le code Python
+\newcommand\pythonstyle{\lstset{
+		language=Python,
+		backgroundcolor=\color{background},     % Couleur de fond
+		basicstyle=\ttfamily\color{codetext}, % Couleur du texte
+		stringstyle=\color{orange-string},     % Couleur des chaînes
+		commentstyle=\color{green-comment}\itshape, % Couleur des commentaires
+		emphstyle=\color{pink},  % Couleur des fonctions
+		emph={create_archive_unit_dir, sub_unit, create_archive_unit_file},  % Liste des fonctions
+		emph={[2]item_path, directory, item, sub_archive_unit, data, data_ir, liste_rp, file_unit, contentsub, archiveunit, exif_data_list, match, createdate, dtf}, % Liste des variables
+		emphstyle={[2]\color{yellow}},% Couleur des variables
+		emph={[3]for, if, or, elif, in},     % Liste de mots clés
+		emphstyle={[3]\color{lightblue}},% Couleur des mots clés
+		frame=tb,                              % Cadre en haut et en bas
+		breaklines=true,                       % Couper les lignes trop longues
+		tabsize=4                              % Taille des tabulations
+}}
+
+% Définition d'un nouvel environnement pour le code Python
+\lstnewenvironment{python}[1][]
+{
+	\pythonstyle % Appliquer le style de code Python défini
+	\lstset{#1}  % Configurer les options de l'environnement 'listings',  #1 est l'argument optionnel passé lors de l'utilisation de l'environnement
+}
+{}
+
+% Définition du style pour le code XML
+\lstdefinelanguage{XML}
+{
+	basicstyle=\ttfamily, % Style de base pour le texte du code
+	morestring=[b]", % Identification des chaînes de caractères entre guillemets doubles
+	morestring=[s]{>}{<}, % Identification des chaînes entre '>' et '<' 
+	identifierstyle=\color{blue}, % Couleur des noms de balises
+	keywordstyle=\color{orange}, % Couleur des mots clés
+	commentstyle=\color{green}, % COuleur des commentaires 
+	moredelim=[s][\color{red}]{\ }{=}, % Définition des délimiteurs pour les attributs (espaces suivis d'un signe "=")
+	stringstyle=\color{orange}, % COuleur des chaînes de caractères
+	moredelim=[s][\color{black}]{>}{<}, % Définition des délimiteurs pour les balises (entre '>' et '<') en noir
+	showspaces=false,  % Ne pas montrer les espaces
+	frame=tb, % Cadre en haut et en bas
+	breaklines=true, % Couper les lignes trop longues
+	tabsize=2  % Taille des tabulations}
+}
+
+% Définition d'un environnement pour le code XML
+\lstnewenvironment{xml}
+{
+	% Applique le style de code XML et défini la police et la taille du texte, permet aux chaînes de casser automatiquement en fin de ligne, 
+	\lstset{language=XML, basicstyle=\ttfamily\small, breaklines=true}
+}
+{}
+
+% Définition d'un style pour le code XML appelé dans le texte
+\newcommand\xmlstyle{\lstset{
+		language=XML,
+		basicstyle=\ttfamily,
+		keywordstyle=\color{orange},
+		stringstyle=\color{orange},
+		identifierstyle=\color{blue},
+		commentstyle=\color{green},
+		moredelim=[s][\color{red}]{\ }{=},
+		moredelim=[s][\color{black}]{>}{<},
+}}
+
+% Défintion d'une commande pour le XML appelé dans le texte
+\newcommand\xmlinline[1]{{\xmlstyle\lstinline!#1!}}
+
+% Modification de la commande \arraystretch, qui contrôle l'espacement vertical des lignes dans les tableaux pour ajuster la hauteur des cellules
+\renewcommand{\arraystretch}{1.5} 
+
+ %%%%%%%%%%%%%% INFORMATIONS POUR LA PAGE DE TITRE
+\author{Selma Bensidhoum - M2 TNAH}
+\title{Les enjeux de l’automatisation du traitement archivistique des reportages photographiques numériques de la Présidence de la République aux Archives nationales}
+
+%%%%%%%%%%%%%%%%%%%%%% DOCUMENT
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			
+			\bigskip
+			
+			\begin{large}				
+				ÉCOLE NATIONALE DES CHARTES\\
+				UNIVERSITÉ PARIS, SCIENCES \& LETTRES
+			\end{large}
+			\begin{center}\rule{2cm}{0.02cm}\end{center}
+			
+			\bigskip
+			\bigskip
+			\bigskip
+			\begin{Large}
+				\textbf{Selma Bensidhoum}\\
+			\end{Large}
+		%selon le cas
+			\begin{normalsize}
+				\textit{diplômée de master}
+			\end{normalsize}
+			
+			\bigskip
+			\bigskip
+			\bigskip
+			
+			\begin{LARGE}
+				\textbf{Les enjeux de l’automatisation du traitement archivistique des reportages photographiques numériques de la Présidence de la République aux Archives nationales}\\
+			\end{LARGE}
+			
+			\bigskip
+			\bigskip
+			\bigskip
+			\begin{large}
+			\end{large}
+			\vfill
+			
+			\begin{large}
+				Mémoire 
+				pour le diplôme de master \\
+				\enquote{Technologies numériques appliquées à l'histoire} \\
+				\bigskip
+				2024
+			\end{large}
+			
+		\end{center}
+	\end{titlepage}
+
+	\thispagestyle{empty}	
+	\cleardoublepage
+	
+\frontmatter
+
+	\chapter*{Résumé}
+\medskip Ce mémoire analyse les défis du traitement archivistique des reportages photographiques numériques produits par le service photographique de la Présidence de la République sous la mandature François Hollande. Face à l'énorme volume de données à verser, il aborde l'enjeu de l'automatisation des paquets d'archives pour alléger le travail des agents, tout en explorant les possibilités d'optimisation de l'indexation de ces reportages. Le mémoire détaille les étapes de réflexion, d’analyse, et de développement technique qui ont conduit à l'élaboration d'une méthode automatisée de fabrication de paquets d'archives. L'intérêt spécifique de l'outil développé est de proposer des solutions d'intégration de métadonnées descriptives issues de sources variées, facilitant ainsi l'accès thématique aux photographies après leur intégration dans le système d'archivage électronique des Archives nationales.
+
+\paragraph{Abstract} This thesis analyses the challenges encountered during the archival processing of digital photographic reports produced by the photographic service of the Presidency of the French Republic under François Hollande. Given the vast volume of data to be archived, it addresses the need for automating the creation of archival packages, while also exploring the opportunities provided by digital technologies to enhance the indexing of these reports and the photographs they contain. The thesis details the stages of reflection, analysis, and technical development that led to the creation of an automated method for producing archival packages. The specific value of the developed tool lies in offering solutions for integrating descriptive metadata from various sources, thereby facilitating thematic access to the photographs after their integration into the National Archives' electronic archiving system.
+\\
+	
+	\textbf{Mots-clés:} archivage électronique ; photographie numérique ; paquets d'archives ; SIP ; automatisation ; indexation ; traitement archivistique ; pipeline.
+	
+	\textbf{Informations bibliographiques:} Selma Bensidhoum, \textit{Les enjeux de l’automatisation du traitement archivistique des reportages photographiques numériques de la Présidence de la République aux Archives nationales}, mémoire de master \enquote{Technologies numériques appliquées à l'histoire}, dir. Emmanuelle Bermès, Émeline Levasseur, École nationale des chartes, 2024.
+	
+\newpage{\pagestyle{empty}\cleardoublepage}
+	
+	\chapter*{Remerciements}
+	
+\lettrine{J}e souhaite avant tout exprimer ma gratitude envers Émeline Levasseur, en tant que tutrice et professeure. Sa patience et sa bienveillance tout au long de ces deux stages, ainsi que sa pédagogie, m'ont permis d'aborder les problèmes rencontrés avec sérénité et de mener ce projet à bien avec confiance et précision. 
+
+Je souhaite également remercier Emmanuelle Bermès pour son aide précieuse, ses encouragements et sa disponibilité tout au long de mon stage et pendant la formation exigeante qui l'a précédé.
+
+Mes remerciements vont aussi à l'ensemble de l'équipe du Département de l'administration des données pour la qualité de leur accueil et leur accompagnement tout au long de mes stages, tant sur les aspects métier que techniques. Une mention particulière va à André Falut pour ses conseils précieux.
+
+Je remercie enfin Françoise Mahé, pour son soutien indéfectible, sa confiance et ses nombreuses relectures, et Charlotte Lamouche, pour son assistance, tant morale que technique.
+\newpage{\pagestyle{empty}\cleardoublepage}
+	
+%%%%%%%%%%%%
+% Impression des bibliographies par catégorie
+\chapter*{Bibliographie}
+\section*{L'archivage électronique}
+\printbibliography[heading=generalites, keyword=generalites]
+\printbibliography[heading=archivage-e-a-aux-archives-nationales, keyword=archivage-e-a-aux-archives-nationales]
+\printbibliography[heading=normes-description, keyword=normes-description]
+\printbibliography[heading=cadre-juridique, keyword=cadre-juridique]
+\printbibliography[heading=systemes-archivage, keyword=systemes-archivage]
+\printbibliography[heading=outils-archivage, keyword=outils-archivage]
+\printbibliography[heading=documentation-vitam, keyword=documentation-vitam]
+\printbibliography[heading=archives-ia, keyword=archives-ia]
+\section*{ Le Service photographique de la Présidence de la République : histoire et description du fonds}
+\printbibliography[heading=instruments-recherche, keyword=instruments-recherche]
+\printbibliography[heading=notices-producteur, keyword=notices-producteur]
+\printbibliography[heading=sources-bibliographiques, keyword=sources-bibliographiques]
+\printbibliography[heading=gestion-archives, keyword=gestion-archives]
+\printbibliography[heading=traitements-caracteristiques, keyword=traitements-caracteristiques]
+\printbibliography[heading=histoire-sociologie, keyword=histoire-sociologie]
+
+
+	\chapter*{Introduction}	
+\markboth{Introduction}{}
+\addcontentsline{toc}{chapter}{Introduction}
+\input{introduction.tex}
+
+\newpage{\pagestyle{empty}\cleardoublepage}
+
+%%%%%%%%%%%%%%%%%Le corps du mémoire
+	\mainmatter
+
+	\part{Les reportages photographiques de la Présidence de la République}
+
+\input{p1_ch1.tex}
+\input{p1_ch2.tex}	
+\input{p1_ch3.tex}
+	
+	\part{Les défis de l'archivage des photographies numériques aux Archives nationales : enjeux de classification et de description face à la masse documentaire}
+
+\input{p2_ch1.tex}
+\input{p2_ch2.tex}	
+\input{p2_ch3.tex}
+
+    \part{Conception d’un pipeline de données pour optimiser l’indexation des reportages photographiques}
+	
+\input{p3_ch1.tex}
+\input{p3_ch2.tex}	
+\input{p3_ch3.tex}
+	
+	\chapter*{Conclusion}
+\markboth{Conclusion}{}
+\addcontentsline{toc}{chapter}{Conclusion}
+\label{sec:conclusion}
+\input{conclusion.tex}
+
+\newpage{\pagestyle{empty}\cleardoublepage}
+	
+%%%%%%%%%%%%%%%%%%
+
+\appendix %Des appendices: tables figures, etc
+
+
+\chapter[Annexe 1]{Modélisation du fonctionnement de l'application de reprise des reportages photographiques de la Présidence de la République.}
+\label{sec:annexe1}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[height=\textheight]{./img/schema_orphee.jpeg}
+	\label{fig:schema}
+\end{figure}
+
+\chapter[Annexe 2]{Pas à pas pour la fabrication semi-automatique de SIP}
+\label{sec:annexe2}
+\includepdf[pages=-]{annexe2.pdf}
+
+\newpage{\pagestyle{empty}\cleardoublepage}
+
+%%%%%%%%%%%%%%%%%%
+
+\backmatter 
+\printglossaries
+\listoftables
+\listoffigures
+\tableofcontents
+\end{document}

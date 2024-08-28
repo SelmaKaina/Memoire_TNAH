@@ -1,0 +1,101 @@
+\chapter{Analyse de l'existant : sources d'information et mappage des métadonnées}
+
+Dans le cadre d'un projet de migration de données tel que la reprise des reportages photographiques, le mappage consiste à mettre en correspondance les champs de plusieurs sources d'informations, en faisant correspondre les champs sources avec les champs cibles. Dans le contexte de l'archivage électronique, il s'agit de définir les métadonnées que l'on souhaite fournir au SAE pour la gestion et l'accessibilité des données versées. La première étape consiste donc en la définition des métadonnées à transférer et l'identification des sources d'information que l'on va exploiter. Une connaissance approfondie du résultat attendu est également nécessaire pour que le mappage soit efficace. Ici, les métadonnées transmises au SAE sont embarquées dans le manifest exprimé en XML-SEDA ; il sera donc nécessaire d'établir des équivalences entre les métadonnées sélectionnées et les champs SEDA. Les difficultés rencontrées dans cette première étape ne sont pas sans rappeler celles que présente tout travail de traduction : existe-t-il une équivalence exacte entre le terme utilisé en langage naturel pour désigner l'information à transférer et le langage de destination, ici le SEDA ? Si une équivalence exacte ne peut être identifiée, il faut s'interroger sur la meilleure manière de le traduire en définissant précisément le signifiant afin de trouver le mot juste. Dans un second temps, une étape de transformation peut être nécessaire pour convertir les données d'un format à l'autre, ce qui implique un travail de nettoyage plus ou moins conséquent. Enfin, dans le contexte archivistique, le principe de non redondance de l'information implique un processus de réflexion qui permettra de déterminer le niveau de granularité associé à chaque métadonnée.
+
+\section{Identifier les sources d'information (fiabilité, facilité d'utilisation) et les informations souhaitées}
+\subsection*{De l'importance des données structurées : choisir les sources de métadonnées}
+Si certaines informations sont requises lors de l'écriture du manifest SEDA, notamment des métadonnées de gestion, d'autres sont facultatives et sont ajoutées pour améliorer l'accessibilité des archives dans le SAE. Afin de déterminer les métadonnées descriptives susceptibles d'être utilisées, il est nécessaire de procéder à une analyse des données à notre disposition et de leur qualité. Dans le cadre de la reprise des reportages photographiques de la Présidence de la République, nous pouvons diviser les métadonnées à ajouter au manifest en trois catégories : les métadonnées externes issues de l'instrument de recherche, ou des autres documents décrivant le fonds, les métadonnées internes des photographies extraites avec Exiftool, et les métadonnées à créer.
+
+Les instruments de recherche décrivent chaque article du versement, la description est donc réalisée au niveau du reportage. Ils contiennent les métadonnées suivantes : numéro de versement, nom du service producteur, dates extrêmes du fonds, intitulé du fonds, numéro du reportage, nom du reportage, nom du ou des photographe(s), date du reportage, lieu(x) de la prise de vue (sauf pour les reportages de la mandature de Jacques Chirac). Les métadonnées internes des fichiers peuvent contenir : l'intitulé du fichier, sa date de prise de vue, le nom du photographe, le lieu de la prise de vue, l'intitulé du reportage, une légende de la photo, et une série de mots-clés. Parmi les métadonnées à créer, certaines doivent être rédigées manuellement, tandis que d'autres peuvent être calculées par des outils informatiques : les métadonnées de format, tout comme l'empreinte des fichiers, sont produites par l'application Siegfried. 
+
+Les instruments de recherche des reportages photographiques de l'Élysée existent sous des formes différentes : celui de la mandature de Jacques Chirac a été encodé en XML-EAD, celui de la mandature de Nicolas Sarkozy existe sous la forme d'un fichier PDF créé à partir d'un tableau Excel, et celui de la mandature de François Hollande a été écrit directement au format Microsoft Word. Tous ces formats ne sont pas aussi facilement exploitables. Les données des instruments de recherche sous la forme de tableur ou de fichier en XML-EAD sont dites \enquote{structurées}, c'est à dire qu'elles sont organisées de manière à être facilement identifiables et exploitables par un programme, elles ont une structure bien définie (tables, champs, balises) qui facilite leur traitement. Les données issues des instruments de recherche au format Microsoft Word ou PDF sont dites \enquote{non structurées}, elles sont plus difficiles à exploiter directement par un programme, l'information étant fournie en format libre (plein texte), ce qui complique l'extraction automatisée des données. Fort heureusement, pour les reportages de la mandature de François Hollande, un export CSV de la base de données Cindoc utilisée par le services des archives de l'Élysée fournit de manière beaucoup plus caractérisée les métadonnées descriptives attendues : numéro du reportage, intitulé, date de début et de fin, mots-clés, noms des personnalités identifiées, mots-clés géographiques (lieux de prise de vue ou liés thématiquement au reportage).
+
+\subsection*{La donnée pivot, fil d'Ariane du pipeline de données}
+Pour s'assurer que les bonnes métadonnées sont associées aux bonnes unités d'archives\footnote{En SEDA, l'unité d'archive correspond à une subdivision intellectuelle dans un instrument de recherche, alignée sur un niveau de description en ISAD-G. L'unité d'archives regroupe un ensemble de métadonnées destinées à décrire ou qualifier un document ou un ensemble de documents, permettant ainsi de gérer la hiérarchie intellectuelle tout en intégrant les métadonnées de description et de gestion spécifiques à chaque niveau archivistique.}, il est nécessaire d'identifier une donnée pivot, qui permettra de connecter les différentes sources de métadonnées aux unités d'archive correspondantes. Pour chaque reportage, cette donnée pivot est le numéro qui lui a été attribué par le service photographique, présent dans le titre du dossier contenant les fichier et dans l'instrument de recherche. Cependant, il a fallu faire preuve de vigilance, car de légères variations, telles que \enquote{1234B}, \enquote{1234Bis} ou \enquote{1234 Bis}, peuvent rendre cette donnée pivot inefficace.
+
+Le nom du fichier ne constitue pas une valeur pivot fiable pour les photographies, car il peut être partagé par plusieurs fichiers au sein d'un même versement. Pour résoudre ce problème, nous avons alterné entre deux valeurs pour associer les métadonnées extraites par Exiftool et celles calculées par Siegfried aux objets de données. Nous avons utilisé soit l'empreinte unique du fichier, soit son chemin, car, dans la mesure où deux fichiers d'un même dossier ne peuvent avoir le même nom, le chemin est nécessairement propre à chaque fichier.
+
+\section{Répartition des métadonnées par niveau de description}
+Afin de garantir une description pertinente et fiable, une analyse approfondie des métadonnées était nécessaire. Celle-ci avait notamment pour objectif de définir à quel niveau de description archivistique chaque métadonnée descriptive devait être associée. En effet, chaque versement pouvait contenir entre quatre et cinq niveaux de description : l'unité archivistique (UA) racine (\enquote{Les reportages de X}), le millésime, le reportage, la séquence (en cas d'une division du reportage en plusieurs parties), et la photographie.
+
+Nos réflexions ont surtout porté sur les UA de niveau \enquote{Reportage} et \enquote{Photographie}, notre objectif étant centré sur l'accessibilité du contenu intellectuel du fonds. Dans le chapitre 4, nous avons évoqué que toutes les métadonnées relatives aux reportages ou aux photographies ne seraient pas retenues pour l'indexation dans le SAE des Archives nationales. Le travail de mappage présenté ici s'inscrit dans cette perspective de sélection des informations à reprendre. Les UA de niveau \enquote{Année} et \enquote{Séquence} servent surtout à structurer le fonds, en particulier la première qui permet d'éviter que les centaines, voire milliers, de reportages apparaissent en râteau sous l'UA racine. 
+
+La description archivistique repose sur plusieurs principes clés : le respect du fonds, la présentation du général au particulier, et la non redondance des informations d'un niveau à l'autre\footcite{isad2000}. Selon ce dernier principe, une métadonnée descriptive associée à un niveau haut s'applique nécessairement aux niveaux inférieurs. Ainsi, si nous savons que l'ensemble des photographies d'un reportage ont été prises par un même photographe, cette information peut être associée à ce niveau de description et sera appliquée à l'ensemble des unités de niveau inférieur. Cependant, si plusieurs photographes sont associés à un même reportage, il est préférable de distinguer lequel est responsable de chaque cliché et donc de placer l'information au niveau de la photographie. L'analyse des métadonnées internes des fichiers a révélé un nombre important de reportages multi-photographes, nous avons donc choisi de placer cette information au niveau des photographies. Il en va de même pour les métadonnées de localisation : bien que de nombreux reportages se déroulent dans un seul lieu, certains couvrent plusieurs lieux distincts et nécessitent une description plus détaillée à un niveau inférieur. Il convient toutefois de rappeler que l'idéal archivistique de non-redondance des informations est difficile à appliquer aux SAE, où les informations d'indexation sont stockées dans des bases de données. En effet, dans une base de données, l'indexation est souvent redondante afin de garantir la pertinence des résultats lors d'une requête.
+
+Des questionnements similaires se sont imposés pour les métadonnées de description et d'indexation (mots-clés). Ces informations tirées des métadonnées internes sont donc censées correspondre à un niveau de granularité fin et apporter des informations propres à chaque prise de vue. Cependant, en 2023, l'analyse des métadonnées internes des reportages photographiques des services du Premier ministre a révélé que ces métadonnées étaient peu présentes et avaient pu être renseignées en masse et se répéter de manière identique dans toutes les photographies d'un reportage. Nous avions alors choisi de faire remonter les mots-clé au niveau des reportages afin d'éviter de créer du bruit dans une recherche par mots-clés, en faisant remonter des fichiers mal indexés. Lorsque la granularité de la description est fine, il est nécessaire de s'assurer de la fiabilité des informations. La situation était différente pour les reportages de la Présidence de la République : le service photographique disposant d'un iconographe, les métadonnées renseignées sont plus précises et plus riches. Nous avons donc choisi de conserver cette information à ce niveau de description.
+
+\section{Le mappage des métadonnées en XML-SEDA : équivalences exactes et traductions contextuelles}
+
+Les deux tableaux ci-dessous présentent le mappage réalisé pour les niveaux de description \enquote{Reportage} et \enquote{Photographie}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\textwidth}{|m{4cm}|m{3.5cm}|m{7.2cm}|}
+		\hline
+		\rowcolor{pastelblue-dark} 
+		\textbf{Information} & \textbf{Source} & \textbf{Balise SEDA} \\
+		\hline
+		\rowcolor{pastelblue}
+		Numéro de reportage & CSV Cindoc & OriginatingAgencyArchiveUnitIdentifier \\
+		\hline
+		\rowcolor{pastelblue}
+		Date & CSV Cindoc & StartDate et EndDate \\
+		\hline
+		\rowcolor{pastelblue}
+		Niveau de description & À créer & DescriptionLevel \\
+		\hline
+		\rowcolor{pastelblue}
+		Nom du reportage & CSV Cindoc & Title \\
+		\hline
+	\end{tabularx}
+	\caption{Mappage des métadonnées associées aux unités d'archives de niveau \enquote{Reportage}.}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabularx}{\textwidth}{|m{4cm}|m{4cm}|X|}
+		\hline
+		\rowcolor{pastelblue-dark} 
+		\textbf{Information} & \textbf{Source} & \textbf{Balise SEDA} \\
+		\hline
+		\rowcolor{pastelblue}
+		Intitulé du fichier & Nom du fichier avec extension & Title \\
+		\hline
+		\rowcolor{pastelblue}
+		Date de prise de vue & Métadonnées internes & StartDate et EndDate \\
+		\hline
+		\rowcolor{pastelblue}
+		Photographe (nom) & Métadonnées internes & AuthorizedAgent/FullName \\
+		\hline
+		\rowcolor{pastelblue}
+		Photographe (activité) & À créer & AuthorizedAgent/Activity \\
+		\hline
+		\rowcolor{pastelblue}
+		Photographe (type de contrat) & À créer & AuthorizedAgent/Mandate \\
+		\hline
+		\rowcolor{pastelblue}
+		Légende & Métadonnées internes & Description \\
+		\hline
+		\rowcolor{pastelblue}
+		Lieu de la prise de vue & Métadonnées internes & Coverage/Spatial \\
+		\hline
+		\rowcolor{pastelblue}
+		Mots-clés & Métadonnées internes & Tag \\
+		\hline
+		\rowcolor{pastelblue}
+		Niveau de description & À créer & DescriptionLevel \\
+		\hline
+	\end{tabularx}
+	\caption{Mappage des métadonnées associées aux unités d'archives de niveau \enquote{Photographie}.}
+\end{table}
+
+Comme nous l'évoquions plus haut, le mappage est également un travail de traduction qui nécessite de se plonger dans le dictionnaire du langage cible pour éviter les contre-sens. 
+
+Le numéro de reportage a été associé à la balise \enquote{OriginatingAgencyArchiveUnitIdentifier}, définit par le dictionnaire du SEDA comme \enquote{l'identifiant attribué à l’unité d’archives par le service producteur}\footcite{siafseda}En effet, le numéro de reportage n'est pas une cote déterminée par un service d'archives mais bien un identifiant créé par le service photographique. À l'exception des reportages de la mandature de Jacques Chirac, les fonds de reportages photographiques de la Présidence de la République ne sont en effet pas cotés à l'article : le seul identifiant dont nous disposons est donc le numéro de reportage. Une nouvelle cote leur sera attribuée au moment du versement dans le SAE : nous présenterons le processus de création de ces cotes dans le chapitre suivant.
+
+Les noms de reportages et intitulés de fichiers sont associés à la balise \enquote{Title}, équivalence exacte s'il en est. Il en va de même pour les légendes des photographies, renvoyées vers la balise \enquote{Description}, et des mots-clés vers les balises \enquote{Tag}. Les champs de localisation sont divisées en deux (\enquote{City} et \enquote{Country}) dans les schéma de métadonnées d'images numériques (XMP, IPTC, Exif). En revanche, en SEDA, ces informations sont associées à la balise \enquote{Coverage} qui permet d'indexer les unités d'archives en fonction de leur couverture spatiale, temporelle ou juridictionnelle. Le type de couverture est précisé par l'élément enfant \enquote{Spatial}.
+
+Nous avons rencontré plus de difficultés pour déterminer la balise permettant de retranscrire l'identité du photographe. En effet, la notion d'auteur, au sens de créateur d'une \oe{}uvre de l'esprit, n'existe pas en SEDA. Dans le contexte archivistique, cette notion est plutôt associée à celle de producteur, or dans le cas présent il s'agit du service photographique et non des agents qui le composent. Pour désigner l'auteur au sens de \enquote{rédacteur du document}, il existe un élément \enquote{Writer}, mais qui s'applique peu au contexte de la photographie. Nous nous sommes donc interrogés sur le sens que nous souhaitions faire porter à cette information : pourquoi souhaitons-nous faire apparaître le nom du photographe ? Pour respecter son droit moral et s'assurer qu'il soit crédité en cas de réutilisation de son \oe{}uvre. Il existe un élément SEDA \enquote{AuthorizedAgent} qui sert à désigner une \enquote{personne ayant des droits sur l’unité d’archives}. Voilà qui correspond davantage à notre situation. Il reste à préciser la nature de ces droits. L'élément \enquote{Activity} indique la profession du détenteur de droit (ici \enquote{Photographe}), et l'élément \enquote{Mandate} précise le \enquote{mandat octroyé à la personne} par exemple le \enquote{contrat de cession de droits en termes de propriété intellectuelle et artistique sur une archive}. En précisant dans la balise \enquote{Mandate} qu'il s'agit d'un photographe de l'Élysée et non d'un photographe privé, nous caractérisons la nature du lien entre l'archive et le photographe : en tant qu'agent de service public, il détient un droit moral sur son \oe{}uvre, mais pas de droits patrimoniaux et n'a pas à être consulté en cas de diffusion de la photographie.
+\\
+
+Dans ce chapitre, nous avons présenté les critères et les méthodes qui ont orienté notre sélection des métadonnées descriptives utilisées pour la reprise des reportages photographiques, dans le but d'améliorer leur indexation et leur accessibilité au sein du SAE des Archives nationales. Comme indiqué dans les chapitres précédents, cette démarche vise à compenser l'absence de description archivistique en utilisant les métadonnées fournies par le service photographique de la Présidence. Toutefois, cette contrainte ne nous exonère pas de la responsabilité de garantir la fiabilité des métadonnées intégrées. Malgré la nécessité de s'adapter aux données disponibles, il est impératif de veiller à la qualité et à la précision des informations choisies, ainsi qu'à leur conformité aux normes archivistiques. En somme, bien que l'adaptation aux contraintes pratiques soit inévitable, une approche vigilante et rigoureuse demeure essentielle pour maintenir l'intégrité et la valeur des archives que nous traitons. La documentation précise de la provenance des métadonnées intégrées dans cette reprise constitue une première réponse à ces exigences, garantissant ainsi une traçabilité et une transparence dans le traitement archivistique des données.
